@@ -1,3 +1,36 @@
-- board.each do |cell, type, id|
-    %div{:id => id, :class => (type << 'cell').join(' ') }
-        = image_for_cell(cell)
+%html
+    %head
+        %link{:type => 'text/css', :href => '/site.css', :rel => 'stylesheet'}
+        %script{:src => 'jquery-1.3.2.min.js', :type => 'text/javascript'}
+        :javascript
+            function getCellUpdater(cell) {
+                return function updateCellContents(data) {
+                    $(cell).html(data)
+                }
+            }
+
+            function clickCell(cell) {
+                jQuery.post('/play',
+                            {marker: 'x', index: cell.id.replace('cell', '')},
+                            getCellUpdater(cell))
+            }
+
+            $(document).ready(function() {
+                jQuery.each ($('.cell'), function(i, val) {
+                    $(val).hover(
+                        function() {
+                            $(val).css('background-color', 'red')
+                        },
+                        function() {
+                            $(val).css('background-color', 'white')
+                        })
+                    $(val).click(
+                        function() {
+                            clickCell(val)
+                        })
+                })
+            })
+    %body
+        - board.each do |cell, type, id|
+            %div{:id => id, :class => (type << 'cell').join(' ') }
+                = image_for_cell(cell)
