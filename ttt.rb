@@ -5,12 +5,13 @@ require 'json'
 
 class Board
     def initialize(w, h, cells = nil)
-        @stride = w
+        @w = w
+        @h = h
         @cells = cells || Array.new(w*h, '-')
     end
 
     def to_s
-        [ @stride, @cells ].to_json
+        [ @w, @cells ].to_json
     end
 
     def self.from_s(s)
@@ -20,17 +21,17 @@ class Board
 
     def cell_type(index)
         type = []
-        if index < @stride
+        if index < @w
             type << :top
-        elsif index >= @cells.length - @stride
+        elsif index >= @cells.length - @w
             type << :bottom
         else
             type << :vmiddle
         end
 
-        if index % @stride == 0
+        if index % @w == 0
             type << :left
-        elsif index % @stride == 3
+        elsif index % @w == 3
             type << :right
         else
             type << :hmiddle
