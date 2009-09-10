@@ -22,6 +22,7 @@
                     if (data[0] == 'ok') {
                         $(cell).html('<img src="/' + marker + '.png"/>')
                         setupTurn(whosNext())
+                        enablePlay()
                     } else if (data[0] == 'game-over') {
                         $(cell).html('<img src="/' + marker + '.png"/>')
                         $('#message').html(data[1] + " has won!")
@@ -30,6 +31,7 @@
             }
 
             function clickCell(cell) {
+                disablePlay()
                 jQuery.post('/play',
                             {marker: currentTurn, index: cell.id.replace('cell', '')},
                             getCellUpdater(cell, currentTurn),
