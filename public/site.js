@@ -24,6 +24,7 @@ function getCellUpdater(cell, marker) {
                 $('#message').html(data[1] + " has won!")
             } else {
                 $('#message').html('<h1>CAT</h1>')
+                $('#cat').css('display', 'block')
             }
             $('#message').append('<br/><a href="/">New Game</a>')
         } else if (data[0] == 'error') {

@@ -34,3 +34,13 @@
 .clearing {
     clear: both;
 }
+
+#cat {
+    position: absolute;
+/*
+    left: 50px;
+    right: 50px;
+*/
+    display: none;
+    z-index: 10;
+}
