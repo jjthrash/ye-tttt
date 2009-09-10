@@ -25,6 +25,7 @@ function getCellUpdater(cell, marker) {
             } else {
                 $('#message').html('<h1>CAT</h1>')
             }
+            $('#message').append('<br/><a href="/">New Game</a>')
         } else if (data[0] == 'error') {
             $('#message').html("error: " + data[1])
             enablePlay()
