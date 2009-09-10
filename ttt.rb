@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'json'
+require 'sass'
 
 class Board
     attr_reader :winner, :full
@@ -158,7 +159,7 @@ end
 
 post '/play' do
     board = get_board(request)
-    response['Content-Type'] = 'application/json'
+    content_type = 'application/json'
     begin
         board.play params[:marker], params[:index].to_i
     rescue => err
@@ -171,4 +172,9 @@ post '/play' do
     else
         ['ok'].to_json
     end
+end
+
+get '/site.css' do
+    content_type 'text/css', :charset => 'utf-8'
+    sass :site
 end
