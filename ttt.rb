@@ -4,6 +4,8 @@ require 'haml'
 require 'json'
 
 class Board
+    attr_reader :winner
+
     def initialize(w, h, cells = nil)
         @w = w
         @h = h
@@ -48,10 +50,61 @@ class Board
         end
     end
 
+    class Counter
+        attr_reader :winner
+
+        def initialize
+            @winner   = nil
+            @in_a_row = 3
+            reset
+        end
+
+        def count(marker)
+            return if marker == '-'
+            if marker == @current_marker
+                @count += 1
+            else
+                @current_marker = marker
+                @count = 1
+            end
+
+            if @count == @in_a_row
+                @winner = @current_marker
+                throw :done
+            end
+        end
+
+        def reset
+            @current_marker = nil
+            @count          = 0
+        end
+    end
+
     def play(marker, index)
         raise "There is already an #{@cells[index]} at index #{index}" if @cells[index] != '-'
 
         @cells[index] = marker
+
+        counter = Counter.new
+        catch (:done) do
+            # look for horizontals
+            @h.times do |i|
+                counter.reset
+                @w.times do |j|
+                    counter.count @cells[i*@w+j]
+                end
+            end
+            # look for verticals
+            @w.times do |j|
+                counter.reset
+                @h.times do |i|
+                    counter.count @cells[i*@w+j]
+                end
+            end
+            # TODO look for diagonals
+        end
+
+        @winner = counter.winner
     end
 end
 
@@ -84,5 +137,10 @@ post '/play' do
     board = get_board(request)
     board.play params[:marker], params[:index].to_i
     response.set_cookie 'board', board.to_s
-    image_for_cell(params[:marker])
+    response['Content-Type'] = 'application/json'
+    if board.winner
+        ['game-over', board.winner].to_json
+    else
+        ['ok', image_for_cell(params[:marker])].to_json
+    end
 end

@@ -17,17 +17,23 @@
                 $('#message').html('<img src="/place' + marker + '.png"/>')
             }
 
-            function getCellUpdater(cell) {
+            function getCellUpdater(cell, marker) {
                 return function updateCellContents(data) {
-                    $(cell).html(data)
-                    setupTurn(whosNext())
+                    if (data[0] == 'ok') {
+                        $(cell).html('<img src="/' + marker + '.png"/>')
+                        setupTurn(whosNext())
+                    } else if (data[0] == 'game-over') {
+                        $(cell).html('<img src="/' + marker + '.png"/>')
+                        $('#message').html(data[1] + " has won!")
+                    }
                 }
             }
 
             function clickCell(cell) {
                 jQuery.post('/play',
                             {marker: currentTurn, index: cell.id.replace('cell', '')},
-                            getCellUpdater(cell))
+                            getCellUpdater(cell, currentTurn),
+                            'json')
             }
 
             $(document).ready(function() {
