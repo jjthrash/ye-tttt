@@ -26,6 +26,9 @@
                     } else if (data[0] == 'game-over') {
                         $(cell).html('<img src="/' + marker + '.png"/>')
                         $('#message').html(data[1] + " has won!")
+                    } else if (data[0] == 'error') {
+                        $('#message').html("error: " + data[1])
+                        enablePlay()
                     }
                 }
             }

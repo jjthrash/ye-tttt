@@ -135,9 +135,14 @@ end
 
 post '/play' do
     board = get_board(request)
-    board.play params[:marker], params[:index].to_i
-    response.set_cookie 'board', board.to_s
     response['Content-Type'] = 'application/json'
+    begin
+        board.play params[:marker], params[:index].to_i
+    rescue => err
+        return ['error', err.message].to_json
+    end
+
+    response.set_cookie 'board', board.to_s
     if board.winner
         ['game-over', board.winner].to_json
     else
