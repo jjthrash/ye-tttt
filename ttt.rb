@@ -107,7 +107,29 @@ class Board
                     counter.count @cells[i*@w+j]
                 end
             end
-            # TODO look for diagonals
+
+            # look for diagonals
+            # 0  1  XX XX
+            # 4  5  6  XX
+            # XX 9  10 11
+            # XX XX 14 15
+
+            # XX XX 2  3
+            # XX 5  6  7
+            # 8  9  10 XX
+            # 12 13 XX XX
+            #TODO don't hard code.. this only supports 4x4
+            [[1, 6, 11],
+             [0, 5, 10, 15],
+             [4, 9, 14],
+             [2, 5, 8],
+             [3, 6, 9, 12],
+             [7, 10, 13]].each do |indexes|
+                counter.reset
+                indexes.each do |i|
+                    counter.count @cells[i]
+                end
+            end
         end
 
         @full   = !found_empty
