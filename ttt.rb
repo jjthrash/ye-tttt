@@ -116,12 +116,6 @@ class Board
 end
 
 module Helpers
-    def image_for_cell(cell)
-        if ['x','o'].include? cell
-            haml "%img{:src => '/#{cell}.png'}"
-        end
-    end
-
     def get_board(request)
         cookie = request.cookies['board']
         if cookie
@@ -153,6 +147,6 @@ post '/play' do
     if board.full or board.winner
         ['game-over', board.winner].to_json
     else
-        ['ok', image_for_cell(params[:marker])].to_json
+        ['ok'].to_json
     end
 end
