@@ -4,7 +4,7 @@ require 'haml'
 require 'json'
 
 class Board
-    attr_reader :winner
+    attr_reader :winner, :full
 
     def initialize(w, h, cells = nil)
         @w = w
@@ -54,8 +54,9 @@ class Board
         attr_reader :winner
 
         def initialize
-            @winner   = nil
-            @in_a_row = 3
+            @winner     = nil
+            @in_a_row   = 3
+            @full = false
             reset
         end
 
@@ -86,14 +87,19 @@ class Board
         @cells[index] = marker
 
         counter = Counter.new
+        found_empty = false
         catch (:done) do
             # look for horizontals
             @h.times do |i|
                 counter.reset
                 @w.times do |j|
+                    found_empty = true if @cells[i*@w+j] == '-'
                     counter.count @cells[i*@w+j]
                 end
             end
+
+            throw :done unless found_empty
+
             # look for verticals
             @w.times do |j|
                 counter.reset
@@ -104,6 +110,7 @@ class Board
             # TODO look for diagonals
         end
 
+        @full   = !found_empty
         @winner = counter.winner
     end
 end
@@ -143,7 +150,7 @@ post '/play' do
     end
 
     response.set_cookie 'board', board.to_s
-    if board.winner
+    if board.full or board.winner
         ['game-over', board.winner].to_json
     else
         ['ok', image_for_cell(params[:marker])].to_json
