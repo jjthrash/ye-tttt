@@ -36,20 +36,26 @@
                             'json')
             }
 
-            $(document).ready(function() {
-                jQuery.each ($('.cell'), function(i, val) {
-                    $(val).hover(
-                        function() {
-                            $(val).css('background-color', '#BBBBBB')
-                        },
-                        function() {
-                            $(val).css('background-color', 'white')
-                        })
-                    $(val).click(
-                        function() {
-                            clickCell(val)
-                        })
+            function enablePlay() {
+                $('.cell').live('click', function() {
+                    clickCell(this)
                 })
+                $('.cell').live('mouseover', function() {
+                    $(this).css('background-color', '#BBBBBB')
+                })
+                $('.cell').live('mouseout', function() {
+                    $(this).css('background-color', 'white')
+                })
+            }
+
+            function disablePlay() {
+                $('.cell').die('click')
+                $('.cell').die('mouseover')
+                $('.cell').die('mouseout')
+            }
+
+            $(document).ready(function() {
+                enablePlay()
                 setupTurn('x')
             })
     %body
